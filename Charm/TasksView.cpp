@@ -34,6 +34,10 @@
 #include "Commands/CommandModifyTask.h"
 #include "Commands/CommandDeleteTask.h"
 
+#ifdef QT_MAC_USE_COCOA
+#include "MacCocoaSearchLineEdit.h"
+#endif
+
 TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
     : QWidget( parent )
     // , ViewInterface()
@@ -106,7 +110,12 @@ TasksView::TasksView( QToolBar* toolBar, QWidget* parent )
              SLOT( actionDeleteTask() ) );
 
     // filter setup
-    QLineEdit* filterLineEdit = new QLineEdit( this );
+#ifdef QT_MAC_USE_COCOA
+    MacCocoaSearchLineEdit* filterLineEdit = new MacCocoaSearchLineEdit( toolBar );
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+#else
+    QLineEdit* filterLineEdit = new QLineEdit( toolBar );
+#endif
     connect( filterLineEdit, SIGNAL( textChanged( const QString& ) ),
              SLOT( slotFiltertextChanged( const QString& ) ) );
 
